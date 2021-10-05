@@ -102,14 +102,14 @@
     border-radius: 10px;
     background: transparent;
     border: 2px solid darkorange; }
-  :root body .categories.post-item-categories {
+  :root body .tag.post-item-category {
     margin-right: 5px;
     font-weight: bold;
     color: darkgray;
     font-style: normal;
     border-radius: 10px;
     background: transparent;
-    border: 2px solid darkorange; }
+    border: 2px solid darkgray; }
   :root body .button.is-default {
     height: 40px;
     border: none;
