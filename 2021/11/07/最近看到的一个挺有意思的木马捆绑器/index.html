@@ -19,11 +19,15 @@
 <p>缺点当然也有，小众语言代表着程序遇见问题时只能照着开发手册去自己寻找，在论坛上很难找到解决办法。</p>
 <p>正常的配置Nim环境即可，这个项目遇见的第三方包都需要自己去下载和编译，Nim有自带的包管理器nimble，也需要自己去下载编译。</p>
 <p>大致流程就是，在github下载nimble和次项目中遇见的第三方包如strfmt、nimcrypto等</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">首先编译nimble</span><br><span class="line">nim c src/nimble </span><br><span class="line">会在src目录生成nimble.exe，添加环境变量即可</span><br><span class="line">之后在对应的第三方包的文件夹下，执行nim install即可安装第三方包</span><br></pre></td></tr></table></figure>
-
+<pre><code>首先编译nimble
+nim c src/nimble 
+会在src目录生成nimble.exe，添加环境变量即可
+之后在对应的第三方包的文件夹下，执行nim install即可安装第三方包
+</code></pre>
 <p>nim的编译依赖于mingw，在nim的目录下运行finish.exe即可自动进行安装</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nim c -d:release --opt:size NimFileBender.nim</span><br><span class="line">编译项目</span><br></pre></td></tr></table></figure>
-
+<pre><code>nim c -d:release --opt:size NimFileBender.nim
+编译项目
+</code></pre>
 <p><img src="/img/artical/2/1.png"></p>
 <p>这个工具操作也比较简单 指定木马和要捆绑的图片文件等，最后随便指定密钥即可完成捆绑</p>
 <p>这个密钥主要作用就是将木马文件进行加密，释放时再解密</p>
