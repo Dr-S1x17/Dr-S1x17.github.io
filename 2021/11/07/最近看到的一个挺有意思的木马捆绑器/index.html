@@ -1,11 +1,179 @@
-<!DOCTYPE html><html class="appearance-light" lang="en"><head><meta charset="UTF-8"><title>最近看到一个挺有意思的木马捆绑器</title><meta name="description" content="因为没有试着努力过 所以才痛苦啊"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
-<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/favicon.png"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="最近看到一个挺有意思的木马捆绑器序之前遇见一个场景：生成的免杀钓鱼马，在被害人点击完成后，因为没有其他的反应，导致受害人很容易察觉出文件有问题，在还没迁移好进程就丢失了权限，或者在已经迁移好后被做了断网处理，好不容易钓鱼上线的主机权限就丢失了。
-那么要怎么解决这个问题，也就是说怎么把恶意的木马再加上一层正常的行为，让被害者不太会察觉出问题呢？
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="最近看到一个挺有意思的木马捆绑器序之前遇见一个场景：生成的免杀钓鱼马，在被害人点击完成后，因为没有其他的反应，导致受害人很容易察觉出文件有问题，在还没迁移好进程就丢失了权限，或者在已经迁移好后被做了断网处理，好不容易钓鱼上线的主机权限就丢失了。 那么要怎么解决这个问题，也就是说怎么把恶意的木马再加上一层正常的行为，让被害者不太会察觉出问题呢？  当时想的办法是，在加载器中添加点正常逻辑，比如在终端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="最近看到一个挺有意思的木马捆绑器">
+<meta property="og:url" content="http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/index.html">
+<meta property="og:site_name" content="617Sec 胡乱写的一些东西">
+<meta property="og:description" content="最近看到一个挺有意思的木马捆绑器序之前遇见一个场景：生成的免杀钓鱼马，在被害人点击完成后，因为没有其他的反应，导致受害人很容易察觉出文件有问题，在还没迁移好进程就丢失了权限，或者在已经迁移好后被做了断网处理，好不容易钓鱼上线的主机权限就丢失了。 那么要怎么解决这个问题，也就是说怎么把恶意的木马再加上一层正常的行为，让被害者不太会察觉出问题呢？  当时想的办法是，在加载器中添加点正常逻辑，比如在终端">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/artical/2/1.png">
+<meta property="og:image" content="http://example.com/img/artical/2/2.png">
+<meta property="og:image" content="http://example.com/img/artical/2/3.png">
+<meta property="og:image" content="http://example.com/img/artical/2/5.png">
+<meta property="og:image" content="http://example.com/img/artical/2/4.png">
+<meta property="og:image" content="http://example.com/img/artical/2/6.png">
+<meta property="og:image" content="http://example.com/img/artical/2/7.png">
+<meta property="og:image" content="http://example.com/img/artical/2/8.png">
+<meta property="og:image" content="http://example.com/img/artical/2/9.png">
+<meta property="og:image" content="http://example.com/img/artical/2/10.png">
+<meta property="og:image" content="http://example.com/img/artical/2/11.png">
+<meta property="og:image" content="http://example.com/img/artical/2/12.png">
+<meta property="og:image" content="http://example.com/img/artical/2/13.png">
+<meta property="og:image" content="http://example.com/img/artical/2/14.png">
+<meta property="article:published_time" content="2021-11-07T04:13:41.000Z">
+<meta property="article:modified_time" content="2021-11-07T07:01:23.929Z">
+<meta property="article:author" content="cYxSec">
+<meta property="article:tag" content="C2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/artical/2/1.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>最近看到一个挺有意思的木马捆绑器</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
 
-当时想的办法是，在加载器中添加点正常逻辑，比如在终端输出点提示信息之类的，让被害人将这些信息认为是程序的逻辑。比如说钓鱼邮件的内容是关于主机安全加固自查工具的时候，在终端输出一些类似于‘当前主机补丁状况良好’、‘当前主机运行权限不足’等等这类提示信息。在上述说的场景的时候也有一定的诱导能力。
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="617Sec 胡乱写的一些东西" type="application/atom+xml">
+</head>
 
-想法已经有了，在实现的时候又遇见了问题，自己的加载器免杀技术不过关，简单.."><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">617's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">最近看到一个挺有意思的木马捆绑器</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">Click back to the top</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">Home</a></h3><h3 class="is-inline-block"><a href="/archives">Archive</a></h3><h3 class="is-inline-block"><a href="/note">Note</a></h3><h3 class="is-inline-block"><a href="/thoughts">Thoughts</a></h3><h3 class="is-inline-block"><a href="/links">Links</a></h3><h3 class="is-inline-block"><a href="/about">About</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">Home</a></h3><h3 class="is-inline-block"><a href="/archives">Archive</a></h3><h3 class="is-inline-block"><a href="/note">Note</a></h3><h3 class="is-inline-block"><a href="/thoughts">Thoughts</a></h3><h3 class="is-inline-block"><a href="/links">Links</a></h3><h3 class="is-inline-block"><a href="/about">About</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8"><span class="toc-text">最近看到一个挺有意思的木马捆绑器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E7%8E%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">发现解决方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%BC%94%E7%A4%BA"><span class="toc-text">项目演示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%8D%E6%9D%80%E6%95%88%E6%9E%9C"><span class="toc-text">免杀效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90"><span class="toc-text">项目分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/C2"><i class="tag post-item-tag">C2</i></a><a href="/categories/%E9%92%93%E9%B1%BC"><i class="tag post-item-category">钓鱼</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">最近看到一个挺有意思的木马捆绑器</h1><time class="has-text-grey" datetime="2021-11-07T04:13:41.000Z">2021-11-07</time><article class="mt-2 post-content"><h1 id="最近看到一个挺有意思的木马捆绑器"><a href="#最近看到一个挺有意思的木马捆绑器" class="headerlink" title="最近看到一个挺有意思的木马捆绑器"></a>最近看到一个挺有意思的木马捆绑器</h1><h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>之前遇见一个场景：生成的免杀钓鱼马，在被害人点击完成后，因为没有其他的反应，导致受害人很容易察觉出文件有问题，在还没迁移好进程就丢失了权限，或者在已经迁移好后被做了断网处理，好不容易钓鱼上线的主机权限就丢失了。</p>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2020/11/12/%E6%B5%85%E8%B0%88%E9%9D%B6%E6%A0%87%E8%A7%86%E8%A7%92%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&text=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&is_video=false&description=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=最近看到一个挺有意思的木马捆绑器&body=Check out this article: http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&name=最近看到一个挺有意思的木马捆绑器&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&t=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8"><span class="toc-number">1.</span> <span class="toc-text">最近看到一个挺有意思的木马捆绑器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E7%8E%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">发现解决方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%BC%94%E7%A4%BA"><span class="toc-number">1.3.</span> <span class="toc-text">项目演示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%8D%E6%9D%80%E6%95%88%E6%9E%9C"><span class="toc-number">1.4.</span> <span class="toc-text">免杀效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90"><span class="toc-number">1.5.</span> <span class="toc-text">项目分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        最近看到一个挺有意思的木马捆绑器
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">cYxSec</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-11-07T04:13:41.000Z" itemprop="datePublished">2021-11-07</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E9%92%93%E9%B1%BC/">钓鱼</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/C2/" rel="tag">C2</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="最近看到一个挺有意思的木马捆绑器"><a href="#最近看到一个挺有意思的木马捆绑器" class="headerlink" title="最近看到一个挺有意思的木马捆绑器"></a>最近看到一个挺有意思的木马捆绑器</h1><h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>之前遇见一个场景：生成的免杀钓鱼马，在被害人点击完成后，因为没有其他的反应，导致受害人很容易察觉出文件有问题，在还没迁移好进程就丢失了权限，或者在已经迁移好后被做了断网处理，好不容易钓鱼上线的主机权限就丢失了。</p>
 <p>那么要怎么解决这个问题，也就是说怎么把恶意的木马再加上一层正常的行为，让被害者不太会察觉出问题呢？</p>
 <ul>
 <li>当时想的办法是，在加载器中添加点正常逻辑，比如在终端输出点提示信息之类的，让被害人将这些信息认为是程序的逻辑。比如说钓鱼邮件的内容是关于主机安全加固自查工具的时候，在终端输出一些类似于‘当前主机补丁状况良好’、‘当前主机运行权限不足’等等这类提示信息。在上述说的场景的时候也有一定的诱导能力。</li>
@@ -58,4 +226,147 @@ nim c src/nimble
 <p>整个程序的流程其实挺简单的</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个捆绑器的思路非常有意思，而且编译起来也就3，4M，实战情况下也完全够用</p>
 <p>后续的拓展思路就是利用其他的偏僻语言，写一个类似的就完全满足实战需求了。</p>
-</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><a class="button is-default" href="/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/" title="Windows下DNS出网的命令回显技巧"><i class="iconfont icon-prev mr-2 has-text-grey"></i><span class="has-text-weight-semibold">Previous: Windows下DNS出网的命令回显技巧</span></a><a class="button is-default" href="/2020/11/12/%E6%B5%85%E8%B0%88%E9%9D%B6%E6%A0%87%E8%A7%86%E8%A7%92%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" title="浅谈靶标视角的信息收集"><span class="has-text-weight-semibold">Next: 浅谈靶标视角的信息收集</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Dr-S1x17/Dr-S1x17.github.io" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com/Dr_S1x17"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/Dr-S1x17"><i class="iconfont icon-github"></i></a><!-- Ins--><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--></section><p><span>Copyright ©</span><span> _S1x!7 2020</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/post.js"></script></body></html>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+         
+          <li><a href="/links/">Links</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8"><span class="toc-number">1.</span> <span class="toc-text">最近看到一个挺有意思的木马捆绑器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E7%8E%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">发现解决方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%BC%94%E7%A4%BA"><span class="toc-number">1.3.</span> <span class="toc-text">项目演示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%8D%E6%9D%80%E6%95%88%E6%9E%9C"><span class="toc-number">1.4.</span> <span class="toc-text">免杀效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90"><span class="toc-number">1.5.</span> <span class="toc-text">项目分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&text=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&is_video=false&description=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=最近看到一个挺有意思的木马捆绑器&body=Check out this article: http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&title=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&name=最近看到一个挺有意思的木马捆绑器&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/&t=最近看到一个挺有意思的木马捆绑器"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2023
+    cYxSec
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

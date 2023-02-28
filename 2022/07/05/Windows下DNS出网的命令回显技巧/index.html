@@ -1,15 +1,174 @@
-<!DOCTYPE html><html class="appearance-light" lang="en"><head><meta charset="UTF-8"><title>Windows下DNS出网的命令回显技巧</title><meta name="description" content="因为没有试着努力过 所以才痛苦啊"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
-<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/favicon.png"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="Windows下DNS出网的命令回显技巧最近遇见了很多仅DNS出网的极限环境，简单研究了个还算通用的利用DNSLog的回显Trick，全当抛砖引玉，不喜勿喷。
-0x00 前言在实战中，命令执行总能遇见各种各样的环境，无回显且仅DNS出网的环境也能占个大多数。仅DNS出网的环境一般利用编码+DNSLog就可以解决回显问题。
-通用指的是在server2003（无powershell）环境也能用。
-windows自带的encode只有certutil
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Windows下DNS出网的命令回显技巧最近遇见了很多仅DNS出网的极限环境，简单研究了个还算通用的利用DNSLog的回显Trick，全当抛砖引玉，不喜勿喷。 0x00 前言在实战中，命令执行总能遇见各种各样的环境，无回显且仅DNS出网的环境也能占个大多数。仅DNS出网的环境一般利用编码+DNSLog就可以解决回显问题。 通用指的是在server2003（无powershell）环境也能用。 wi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows下DNS出网的命令回显技巧">
+<meta property="og:url" content="http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/index.html">
+<meta property="og:site_name" content="617Sec 胡乱写的一些东西">
+<meta property="og:description" content="Windows下DNS出网的命令回显技巧最近遇见了很多仅DNS出网的极限环境，简单研究了个还算通用的利用DNSLog的回显Trick，全当抛砖引玉，不喜勿喷。 0x00 前言在实战中，命令执行总能遇见各种各样的环境，无回显且仅DNS出网的环境也能占个大多数。仅DNS出网的环境一般利用编码+DNSLog就可以解决回显问题。 通用指的是在server2003（无powershell）环境也能用。 wi">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/artical/3/1.png">
+<meta property="og:image" content="http://example.com/img/artical/3/2.png">
+<meta property="og:image" content="http://example.com/img/artical/3/3.png">
+<meta property="og:image" content="http://example.com/img/artical/3/4.png">
+<meta property="og:image" content="http://example.com/img/artical/3/5.png">
+<meta property="og:image" content="http://example.com/img/artical/3/6.png">
+<meta property="og:image" content="http://example.com/img/artical/3/7.png">
+<meta property="og:image" content="http://example.com/img/artical/3/11.png">
+<meta property="og:image" content="http://example.com/img/artical/3/12.png">
+<meta property="og:image" content="http://example.com/img/artical/3/13.png">
+<meta property="og:image" content="http://example.com/img/artical/3/14.png">
+<meta property="article:published_time" content="2022-07-05T04:13:41.000Z">
+<meta property="article:modified_time" content="2023-02-28T02:19:06.825Z">
+<meta property="article:author" content="cYxSec">
+<meta property="article:tag" content="RCE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/artical/3/1.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Windows下DNS出网的命令回显技巧</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="617Sec 胡乱写的一些东西" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&text=Windows下DNS出网的命令回显技巧"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&is_video=false&description=Windows下DNS出网的命令回显技巧"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Windows下DNS出网的命令回显技巧&body=Check out this article: http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&name=Windows下DNS出网的命令回显技巧&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&t=Windows下DNS出网的命令回显技巧"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7"><span class="toc-number">1.</span> <span class="toc-text">Windows下DNS出网的命令回显技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-base64-encode%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">0x01 base64-encode存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-hex-encode%E6%96%B9%E6%A1%88"><span class="toc-number">1.3.</span> <span class="toc-text">0x02 hex-encode方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A3%9F%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x03 自动化食用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%90%8E%E7%BB%AD"><span class="toc-number">1.5.</span> <span class="toc-text">0x04 后续</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Windows下DNS出网的命令回显技巧
+    </h1>
 
 
-certutil自带了base64和hex两种encode方法
-0x01 base64-encode存在的问题
-特殊字符。+，/ （无powershell环境处理替换非常麻烦）
-单行长度。dns域名长度限制63个。certutil-encode后单行字符长度为6.."><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">617's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">Windows下DNS出网的命令回显技巧</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">Click back to the top</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">Home</a></h3><h3 class="is-inline-block"><a href="/archives">Archive</a></h3><h3 class="is-inline-block"><a href="/note">Note</a></h3><h3 class="is-inline-block"><a href="/thoughts">Thoughts</a></h3><h3 class="is-inline-block"><a href="/links">Links</a></h3><h3 class="is-inline-block"><a href="/about">About</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">Home</a></h3><h3 class="is-inline-block"><a href="/archives">Archive</a></h3><h3 class="is-inline-block"><a href="/note">Note</a></h3><h3 class="is-inline-block"><a href="/thoughts">Thoughts</a></h3><h3 class="is-inline-block"><a href="/links">Links</a></h3><h3 class="is-inline-block"><a href="/about">About</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7"><span class="toc-text">Windows下DNS出网的命令回显技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-base64-encode%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">0x01 base64-encode存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-hex-encode%E6%96%B9%E6%A1%88"><span class="toc-text">0x02 hex-encode方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A3%9F%E7%94%A8"><span class="toc-text">0x03 自动化食用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%90%8E%E7%BB%AD"><span class="toc-text">0x04 后续</span></a></li></ol></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/RCE"><i class="tag post-item-tag">RCE</i></a><a href="/categories/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7"><i class="tag post-item-category">奇技淫巧</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">Windows下DNS出网的命令回显技巧</h1><time class="has-text-grey" datetime="2022-07-05T04:13:41.000Z">2022-07-05</time><article class="mt-2 post-content"><h1 id="Windows下DNS出网的命令回显技巧"><a href="#Windows下DNS出网的命令回显技巧" class="headerlink" title="Windows下DNS出网的命令回显技巧"></a>Windows下DNS出网的命令回显技巧</h1><p>最近遇见了很多仅DNS出网的极限环境，简单研究了个还算通用的利用DNSLog的回显Trick，全当抛砖引玉，不喜勿喷。</p>
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">cYxSec</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-07-05T04:13:41.000Z" itemprop="datePublished">2022-07-05</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/">奇技淫巧</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/RCE/" rel="tag">RCE</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="Windows下DNS出网的命令回显技巧"><a href="#Windows下DNS出网的命令回显技巧" class="headerlink" title="Windows下DNS出网的命令回显技巧"></a>Windows下DNS出网的命令回显技巧</h1><p>最近遇见了很多仅DNS出网的极限环境，简单研究了个还算通用的利用DNSLog的回显Trick，全当抛砖引玉，不喜勿喷。</p>
 <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>在实战中，命令执行总能遇见各种各样的环境，无回显且仅DNS出网的环境也能占个大多数。仅DNS出网的环境一般利用编码+DNSLog就可以解决回显问题。</p>
 <p>通用指的是在server2003（无powershell）环境也能用。</p>
 <p>windows自带的encode只有certutil</p>
@@ -202,4 +361,186 @@ if __name__ == &#39;__main__&#39;:
 <p><img src="/img/artical/3/14.png"></p>
 <p>Code: <a target="_blank" rel="noopener" href="https://github.com/Dr-S1x17/NoNetCmdEcho-FileW.e">https://github.com/Dr-S1x17/NoNetCmdEcho-FileW.e</a></p>
 <p>参考链接：<a target="_blank" rel="noopener" href="http://www.bathome.net/">http://www.bathome.net</a></p>
-</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><em></em><a class="button is-default" href="/2021/11/07/%E6%9C%80%E8%BF%91%E7%9C%8B%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E6%9C%A8%E9%A9%AC%E6%8D%86%E7%BB%91%E5%99%A8/" title="最近看到一个挺有意思的木马捆绑器"><span class="has-text-weight-semibold">Next: 最近看到一个挺有意思的木马捆绑器</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Dr-S1x17/Dr-S1x17.github.io" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com/Dr_S1x17"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/Dr-S1x17"><i class="iconfont icon-github"></i></a><!-- Ins--><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--></section><p><span>Copyright ©</span><span> _S1x!7 2020</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/post.js"></script></body></html>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+         
+          <li><a href="/links/">Links</a></li>
+         
+          <li><a href="/about/">About</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7"><span class="toc-number">1.</span> <span class="toc-text">Windows下DNS出网的命令回显技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-base64-encode%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">0x01 base64-encode存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-hex-encode%E6%96%B9%E6%A1%88"><span class="toc-number">1.3.</span> <span class="toc-text">0x02 hex-encode方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A3%9F%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">0x03 自动化食用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E5%90%8E%E7%BB%AD"><span class="toc-number">1.5.</span> <span class="toc-text">0x04 后续</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&text=Windows下DNS出网的命令回显技巧"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&is_video=false&description=Windows下DNS出网的命令回显技巧"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Windows下DNS出网的命令回显技巧&body=Check out this article: http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&title=Windows下DNS出网的命令回显技巧"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&name=Windows下DNS出网的命令回显技巧&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/05/Windows%E4%B8%8BDNS%E5%87%BA%E7%BD%91%E7%9A%84%E5%91%BD%E4%BB%A4%E5%9B%9E%E6%98%BE%E6%8A%80%E5%B7%A7/&t=Windows下DNS出网的命令回显技巧"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2023
+    cYxSec
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/links/">Links</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+  
+<script src="/js/search.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+
+    var $inputArea = $("input#search-input");
+    var $resultArea = document.querySelector("div#search-result");
+
+    $inputArea.focus(function() {
+      var search_path = "search.xml";
+      if (search_path.length == 0) {
+        search_path = "search.xml";
+      }
+      var path = "/" + search_path;
+      searchFunc(path, 'search-input', 'search-result');
+    });
+
+    $inputArea.keydown(function(e) {
+      if (e.which == 13) {
+        e.preventDefault();
+      }
+    });
+
+    var observer = new MutationObserver(function(mutationsList, observer) {
+      if (mutationsList.length == 1) {
+        if (mutationsList[0].addedNodes.length) {
+          $(".search-no-result").hide();
+        } else if (mutationsList[0].removedNodes.length) {
+          $(".search-no-result").show(200);
+        }
+      }
+    });
+
+    observer.observe($resultArea, { childList: true });
+
+  });
+  </script>
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
